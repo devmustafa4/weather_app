@@ -23,7 +23,7 @@ class _MyApp extends State<MyApp> {
       body: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height / 2.3,
             width: MediaQuery.of(context).size.width,
             color: Colors.lightBlueAccent,
             child: Column(
@@ -63,10 +63,10 @@ class _MyApp extends State<MyApp> {
             padding: EdgeInsets.all(20.0),
             child: ListView(
               children: [
-                  WeatherTile(title: "Temperature"),
-                  WeatherTile(title: "Weather"),
-                  WeatherTile(title: "Humidity"),
-                  WeatherTile(title: "Wind Speed"),
+                  WeatherTile(icon: Icons.thermostat_outlined, title: "Temperature", subtitle: "52"),
+                  WeatherTile(icon: Icons.filter_drama_outlined, title: "Weather", subtitle: "Cloudy"),
+                  WeatherTile(icon: Icons.wb_sunny_outlined, title: "Humidity", subtitle: "something"),
+                  WeatherTile(icon: Icons.waves_outlined, title: "Wind Speed", subtitle: "2MPH"),
               ],
             )
           )
