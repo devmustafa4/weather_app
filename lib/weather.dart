@@ -67,46 +67,71 @@ class _MyApp extends State<MyApp> {
   }
 
   var cityName = "Taxila";
-
   @override
   Widget build (BuildContext context) {
     return Scaffold(
 
         appBar: AppBar(
-          leading: Icon(Icons.search),
+          leading: Icon(Icons.search_rounded),
           title:
           TextField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
                 border: InputBorder.none,
-                labelText: 'Enter City Name',
+                labelText: 'Enter city Name',
+                hintText: 'Enter a city Name',
             ),
             onChanged: (text) {
-              cityName=text;
+                setState(()
+                {
+                  cityName = text;
+                });
             },
               ),
             ),
-        body: FutureBuilder<WeatherInfo>(
-            future: fetchWeather(cityName),
-            builder: (context, snapshot) {
-              if (snapshot.hasData){
-                return MainWidget(
-                    location: snapshot.data!.location,
-                    temp: snapshot.data!.temp,
-                    tempMin: snapshot.data!.tempMin,
-                    tempMax: snapshot.data!.tempMax,
-                    weather: snapshot.data!.weather,
-                    humidity: snapshot.data!.humidity,
-                    windSpeed: snapshot.data!.windSpeed);
-              } else if (snapshot.hasError) {
-                return Center(
-                    child:Text("${snapshot.error}")
+        body: buildFutureBuilder(cityName)
+    );
+  }
+
+  FutureBuilder<WeatherInfo> buildFutureBuilder(var cityName) {
+    return FutureBuilder<WeatherInfo>(
+          future: fetchWeather(cityName),
+          builder: (context, snapshot) {
+            if (snapshot.hasData){
+              return MainWidget(
+                  location: snapshot.data!.location,
+                  temp: snapshot.data!.temp,
+                  tempMin: snapshot.data!.tempMin,
+                  tempMax: snapshot.data!.tempMax,
+                  weather: snapshot.data!.weather,
+                  humidity: snapshot.data!.humidity,
+                  windSpeed: snapshot.data!.windSpeed);
+            } else if (snapshot.hasError) {
+              if (cityName == ""){
+                return const Center(
+                    child:Text("Enter a name of any city", style:
+                    TextStyle(
+                      color: Colors.lightBlue,
+                      fontWeight:  FontWeight.w700,
+                      fontSize: 14,
+                    ),),
                 );
               }
-              return Center(
-                  child: CircularProgressIndicator()
-              );
+              else{
+                return const Center(
+                    child:Text("Could not find any information on the city name you entered. \nPlease Try A different City",
+                      style: TextStyle(
+                          color: Colors.lightBlue,
+                          fontWeight:  FontWeight.w700,
+                          fontSize: 14,
+                      ),
+                    ),
+                );
+              }
             }
-        )
-    );
+            return Center(
+                child: CircularProgressIndicator()
+            );
+          }
+      );
   }
 }
