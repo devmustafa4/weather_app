@@ -1,6 +1,54 @@
+import 'dart:io';
+import 'package:weather_app/widgets/main_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:weather_app/widgets/weather_tile.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
+Future<WeatherInfo> fetchWeather (cityName) async {
+  const apiKey = "99994d9768f8a3cead741586b8d822f7";
+  var requestURL = "https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${apiKey}";
+
+  var response = await http.get(Uri.parse(requestURL));
+
+  if (response.statusCode == 200) {
+    return WeatherInfo.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception("Error Loading request URL info.");
+  }
+}
+
+class WeatherInfo{
+  var location;
+  var temp;
+  var tempMin;
+  var tempMax;
+  var weather;
+  var humidity;
+  var windSpeed;
+
+  WeatherInfo({
+   required this.location,
+   required this.temp,
+   required this.tempMin,
+   required this.tempMax,
+   required this.weather,
+   required this.humidity,
+    required this.windSpeed,
+  });
+
+  factory WeatherInfo.fromJson(Map<String, dynamic> json) {
+    return WeatherInfo(
+        location: json['name'],
+        temp: json['main']['temp'],
+        tempMin: json['main']['temp_min'],
+        tempMax: json['main']['temp_max'],
+        weather: json['weather'][0]['description'],
+        humidity: json['main']['humidity'],
+        windSpeed: json['wind']['speed']);
+
+  }
+}
 
 void main() => runApp(
   MaterialApp(
@@ -17,62 +65,43 @@ class MyApp extends StatefulWidget{
 }
 
 class _MyApp extends State<MyApp> {
+
+  late Future<WeatherInfo> futureWeather;
+
+  @override
+  void initState(){
+    super.initState();
+    futureWeather = fetchWeather("Taxila");
+  }
+
   @override
   Widget build (BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height / 2,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.lightBlueAccent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Text(
-                  "Location",
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w900
-                  )
-                ),
-                Padding(
-                    padding: EdgeInsets.only(top:10.0, bottom:10.0),
-                    child: Text(
-                      "Temp",
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 40.0,
-                        fontWeight: FontWeight.w900
-                    ),
-                  ),
-                ),
-                Text(
-                  "High of temp, low of temp",
-                  style: TextStyle(
-                    color: Color(0xff9e9e9e),
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w600
-                  )
-                )
-              ],
-            )
+        appBar: AppBar(
+          title: Text(
+            "Weather App"
           ),
-          Expanded(child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: ListView(
-              children: [
-                  WeatherTile(title: "Temperature"),
-                  WeatherTile(title: "Weather"),
-                  WeatherTile(title: "Humidity"),
-                  WeatherTile(title: "Wind Speed"),
-              ],
-            )
-          )
-          )
-        ],
-      )
+        ),
+      body: FutureBuilder<WeatherInfo>(
+        future: futureWeather,
+        builder: (context, snapshot) {
+          if (snapshot.hasData){
+            return MainWidget(
+            location: snapshot.data!.location,
+            temp: snapshot.data!.temp,
+            tempMin: snapshot.data!.tempMin,
+            tempMax: snapshot.data!.tempMax,
+            weather: snapshot.data!.weather,
+            humidity: snapshot.data!.humidity,
+            windSpeed: snapshot.data!.windSpeed);
+          } else if (snapshot.hasError) {
+              return Center(
+                  child:Text("${snapshot.error}")
+              );
+        }
+          return CircularProgressIndicator();
+      }
+    )
     );
   }
 }
