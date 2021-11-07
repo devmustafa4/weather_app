@@ -43,7 +43,7 @@ class MainWidget extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(top:10.0, bottom:10.0),
                   child: Text(
-                    "${temp.toInt().toString()}°C",
+                    "${temp.toInt().toString()}°",
                     style: TextStyle(
                         color: Colors.white60,
                         fontSize: 40.0,
@@ -58,9 +58,9 @@ class MainWidget extends StatelessWidget {
             padding: EdgeInsets.all(20.0),
             child: ListView(
               children: [
-                WeatherTile(icon: Icons.thermostat_outlined, title: "Temperature", subtitle: "${temp.toInt().toString()}°C"),
-                WeatherTile(icon: Icons.thermostat_outlined, title: "Max Temp", subtitle: "${tempMax.toInt().toString()}°C"),
-                WeatherTile(icon: Icons.thermostat_outlined, title: "Min Temp", subtitle: "${tempMin.toInt().toString()}°C"),
+                WeatherTile(icon: Icons.thermostat_outlined, title: "Temperature", subtitle: "${temp.toInt().toString()}°"),
+                WeatherTile(icon: Icons.thermostat_outlined, title: "Max Temp", subtitle: "${tempMax.toInt().toString()}°"),
+                WeatherTile(icon: Icons.thermostat_outlined, title: "Min Temp", subtitle: "${tempMin.toInt().toString()}°"),
                 WeatherTile(icon: Icons.filter_drama_outlined, title: "Weather", subtitle: "${weather.toString()}"),
                 WeatherTile(icon: Icons.wb_sunny_outlined, title: "Humidity", subtitle: "${humidity.toString()} %"),
                 WeatherTile(icon: Icons.waves_outlined, title: "Wind Speed", subtitle: "${windSpeed.toString()} MPH"),
